@@ -1,0 +1,164 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1f1f1f;
+  --muted: #6f6f6f;
+  --accent: #2e7d5a;
+  --grid: #e5e2dc;
+  --snake: #1f1f1f;
+  --food: #d04a34;
+}
+
+body {
+  margin: 0;
+  font-family: "Georgia", "Times New Roman", serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.card {
+  width: min(560px, 95vw);
+  background: var(--card);
+  border: 1px solid #ddd7cf;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+h1 {
+  font-size: 28px;
+  margin: 0 0 6px;
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.score {
+  font-weight: 600;
+}
+
+.board-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #f2efe9, #faf8f4);
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid #e2ded7;
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+  max-width: 480px;
+  border-radius: 8px;
+  background: #fbfaf7;
+  border: 1px solid var(--grid);
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  inset: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  backdrop-filter: blur(2px);
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.overlay-card {
+  text-align: center;
+  padding: 16px 20px;
+  border: 1px solid #e0dcd5;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.overlay-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.overlay-subtitle {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.controls {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  border: 1px solid #cfc7bd;
+  background: #ffffff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+button:hover {
+  border-color: #bdb4a8;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.touch-controls {
+  margin-top: 20px;
+  display: none;
+  gap: 8px;
+  flex-direction: column;
+}
+
+.touch-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.touch-controls button {
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .touch-controls {
+    display: flex;
+  }
+}

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Snake</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="card">
+        <header class="header">
+          <div>
+            <h1>Snake</h1>
+            <p class="subtitle">Classic grid snake.</p>
+          </div>
+          <div class="score" aria-live="polite">Score: <span id="score">0</span></div>
+        </header>
+
+        <div class="board-wrap">
+          <canvas id="board" width="400" height="400" aria-label="Snake game board"></canvas>
+          <div id="overlay" class="overlay hidden" role="status" aria-live="polite">
+            <div class="overlay-card">
+              <div id="overlay-title" class="overlay-title">Game Over</div>
+              <div id="overlay-subtitle" class="overlay-subtitle">Press R or Restart</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="pauseBtn" type="button">Pause</button>
+          <button id="restartBtn" type="button">Restart</button>
+        </div>
+
+        <div class="touch-controls" aria-label="Touch controls">
+          <button data-dir="up" type="button">Up</button>
+          <div class="touch-row">
+            <button data-dir="left" type="button">Left</button>
+            <button data-dir="down" type="button">Down</button>
+            <button data-dir="right" type="button">Right</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="snakeGame.js"></script>
+  </body>
+</html>
