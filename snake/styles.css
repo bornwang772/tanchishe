@@ -6,20 +6,25 @@
 
 :root {
   color-scheme: light;
-  --bg: #f6f4ef;
-  --card: #ffffff;
-  --ink: #1f1f1f;
-  --muted: #6f6f6f;
-  --accent: #2e7d5a;
-  --grid: #e5e2dc;
-  --snake: #1f1f1f;
-  --food: #d04a34;
+  --bg-deep: #0b1a38;
+  --bg-mid: #102a5b;
+  --card: rgba(12, 28, 64, 0.72);
+  --ink: #f5f8ff;
+  --muted: #b9c6ef;
+  --accent: #7bd9ff;
+  --grid: rgba(255, 255, 255, 0.14);
+  --snake: #f7fbff;
+  --food: #ff8a5b;
 }
 
 body {
   margin: 0;
-  font-family: "Georgia", "Times New Roman", serif;
-  background: var(--bg);
+  font-family: "Avenir Next", "Futura", "Gill Sans", "Helvetica Neue", sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(255, 140, 200, 0.25), transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(110, 200, 255, 0.35), transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(120, 255, 226, 0.18), transparent 45%),
+    linear-gradient(160deg, var(--bg-mid), var(--bg-deep));
   color: var(--ink);
 }
 
@@ -32,11 +37,25 @@ body {
 
 .card {
   width: min(560px, 95vw);
-  background: var(--card);
-  border: 1px solid #ddd7cf;
-  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(20, 46, 96, 0.86), rgba(10, 20, 48, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
   padding: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 30px 60px rgba(6, 12, 30, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: -40% -20% auto -20%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(130, 215, 255, 0.22), transparent 70%);
+  pointer-events: none;
 }
 
 .header {
@@ -51,6 +70,7 @@ h1 {
   font-size: 28px;
   margin: 0 0 6px;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .subtitle {
@@ -61,36 +81,45 @@ h1 {
 
 .score {
   font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(120, 220, 255, 0.3), rgba(255, 170, 210, 0.3));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .board-wrap {
   position: relative;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #f2efe9, #faf8f4);
-  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(90, 160, 255, 0.25), rgba(255, 140, 210, 0.15));
+  border-radius: 14px;
   padding: 12px;
-  border: 1px solid #e2ded7;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 0 30px rgba(5, 10, 30, 0.45),
+    0 12px 30px rgba(0, 0, 0, 0.35);
 }
 
 canvas {
   width: 100%;
   height: auto;
   max-width: 480px;
-  border-radius: 8px;
-  background: #fbfaf7;
-  border: 1px solid var(--grid);
+  border-radius: 10px;
+  background: linear-gradient(160deg, rgba(12, 30, 70, 0.9), rgba(18, 55, 110, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.18);
   display: block;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.35);
 }
 
 .overlay {
   position: absolute;
   inset: 12px;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(10, 24, 55, 0.6);
   display: grid;
   place-items: center;
   border-radius: 10px;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(6px);
 }
 
 .overlay.hidden {
@@ -100,9 +129,10 @@ canvas {
 .overlay-card {
   text-align: center;
   padding: 16px 20px;
-  border: 1px solid #e0dcd5;
-  border-radius: 10px;
-  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background: rgba(12, 28, 64, 0.8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .overlay-title {
@@ -123,21 +153,28 @@ canvas {
 }
 
 button {
-  border: 1px solid #cfc7bd;
-  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(145deg, rgba(200, 240, 255, 0.85), rgba(120, 180, 255, 0.8));
   padding: 10px 14px;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 14px;
   cursor: pointer;
   font-family: inherit;
+  color: #0a1733;
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 button:hover {
-  border-color: #bdb4a8;
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 button:active {
   transform: translateY(1px);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
 .touch-controls {
