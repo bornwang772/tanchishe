@@ -6,25 +6,27 @@
 
 :root {
   color-scheme: light;
-  --bg-deep: #0b1a38;
-  --bg-mid: #102a5b;
-  --card: rgba(12, 28, 64, 0.72);
-  --ink: #f5f8ff;
-  --muted: #b9c6ef;
-  --accent: #7bd9ff;
-  --grid: rgba(255, 255, 255, 0.14);
-  --snake: #f7fbff;
-  --food: #ff8a5b;
+  --bg-deep: #f8b6ff;
+  --bg-mid: #a7e6ff;
+  --bg-warm: #ffe59c;
+  --card: rgba(255, 255, 255, 0.65);
+  --ink: #2f2148;
+  --muted: #6f5f93;
+  --accent: #ff7ad9;
+  --grid: rgba(255, 255, 255, 0.45);
+  --snake: #64d9ff;
+  --snake-body: rgba(255, 255, 255, 0.92);
+  --food: #ff6fa2;
 }
 
 body {
   margin: 0;
   font-family: "Avenir Next", "Futura", "Gill Sans", "Helvetica Neue", sans-serif;
   background:
-    radial-gradient(circle at 15% 10%, rgba(255, 140, 200, 0.25), transparent 45%),
-    radial-gradient(circle at 85% 15%, rgba(110, 200, 255, 0.35), transparent 50%),
-    radial-gradient(circle at 20% 80%, rgba(120, 255, 226, 0.18), transparent 45%),
-    linear-gradient(160deg, var(--bg-mid), var(--bg-deep));
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.6), transparent 45%),
+    radial-gradient(circle at 80% 25%, rgba(255, 172, 225, 0.6), transparent 50%),
+    radial-gradient(circle at 20% 85%, rgba(255, 246, 190, 0.6), transparent 45%),
+    linear-gradient(150deg, var(--bg-mid), var(--bg-deep) 60%, var(--bg-warm));
   color: var(--ink);
 }
 
@@ -39,14 +41,14 @@ body {
   width: min(560px, 95vw);
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(20, 46, 96, 0.86), rgba(10, 20, 48, 0.9));
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(245, 233, 255, 0.65));
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
   padding: 20px;
   box-shadow:
-    0 30px 60px rgba(6, 12, 30, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(12px);
+    0 30px 60px rgba(82, 60, 120, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
 }
 
 .card::after {
@@ -54,7 +56,7 @@ body {
   position: absolute;
   inset: -40% -20% auto -20%;
   height: 60%;
-  background: radial-gradient(circle, rgba(130, 215, 255, 0.22), transparent 70%);
+  background: radial-gradient(circle, rgba(255, 179, 230, 0.45), transparent 70%);
   pointer-events: none;
 }
 
@@ -83,39 +85,45 @@ h1 {
   font-weight: 600;
   padding: 6px 12px;
   border-radius: 999px;
-  background: linear-gradient(135deg, rgba(120, 220, 255, 0.3), rgba(255, 170, 210, 0.3));
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, rgba(255, 210, 240, 0.6), rgba(200, 245, 255, 0.6));
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 6px 14px rgba(149, 105, 176, 0.25);
 }
 
 .board-wrap {
   position: relative;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, rgba(90, 160, 255, 0.25), rgba(255, 140, 210, 0.15));
-  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(255, 220, 240, 0.6), rgba(180, 230, 255, 0.5)),
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.65), transparent 55%);
+  border-radius: 16px;
   padding: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow:
-    inset 0 0 30px rgba(5, 10, 30, 0.45),
-    0 12px 30px rgba(0, 0, 0, 0.35);
+    inset 0 0 30px rgba(255, 255, 255, 0.4),
+    0 18px 30px rgba(140, 90, 160, 0.25);
 }
 
 canvas {
   width: 100%;
   height: auto;
   max-width: 480px;
-  border-radius: 10px;
-  background: linear-gradient(160deg, rgba(12, 30, 70, 0.9), rgba(18, 55, 110, 0.9));
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgba(255, 240, 248, 0.85), rgba(200, 235, 255, 0.85));
+  border: 1px solid rgba(255, 255, 255, 0.7);
   display: block;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.35);
+  box-shadow:
+    inset 0 0 20px rgba(255, 255, 255, 0.6),
+    0 12px 18px rgba(152, 108, 175, 0.2);
 }
 
 .overlay {
   position: absolute;
   inset: 12px;
-  background: rgba(10, 24, 55, 0.6);
+  background: rgba(255, 255, 255, 0.6);
   display: grid;
   place-items: center;
   border-radius: 10px;
@@ -129,10 +137,12 @@ canvas {
 .overlay-card {
   text-align: center;
   padding: 16px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: 12px;
-  background: rgba(12, 28, 64, 0.8);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 12px 20px rgba(140, 90, 160, 0.2);
 }
 
 .overlay-title {
@@ -153,21 +163,21 @@ canvas {
 }
 
 button {
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: linear-gradient(145deg, rgba(200, 240, 255, 0.85), rgba(120, 180, 255, 0.8));
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: linear-gradient(145deg, rgba(255, 230, 248, 0.95), rgba(190, 230, 255, 0.95));
   padding: 10px 14px;
   border-radius: 12px;
   font-size: 14px;
   cursor: pointer;
   font-family: inherit;
-  color: #0a1733;
+  color: #40265b;
   box-shadow:
-    0 6px 16px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    0 8px 16px rgba(144, 94, 170, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 button:hover {
-  border-color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.9);
 }
 
 button:active {
