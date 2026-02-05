@@ -12,11 +12,13 @@ const touchControls = document.querySelector(".touch-controls");
 const ctx = canvas.getContext("2d");
 const CELL_SIZE = 20;
 const TICK_MS = 120;
+const EAT_EFFECT_MS = 240;
 
 let state = createGameState({ rows: 20, cols: 20, rngSeed: 42 });
 let pendingDir = null;
 let lastTick = performance.now();
 let paused = false;
+let eatEffect = null;
 
 function resizeCanvas() {
   canvas.width = state.cols * CELL_SIZE;
@@ -50,12 +52,45 @@ function drawCell(cell, color) {
   );
 }
 
-function render() {
+function drawEatEffect(now, foodColor, accentColor) {
+  if (!eatEffect) return;
+  const elapsed = now - eatEffect.startedAt;
+  if (elapsed > EAT_EFFECT_MS) {
+    eatEffect = null;
+    return;
+  }
+
+  const t = elapsed / EAT_EFFECT_MS;
+  const centerX = eatEffect.cell.c * CELL_SIZE + CELL_SIZE / 2;
+  const centerY = eatEffect.cell.r * CELL_SIZE + CELL_SIZE / 2;
+  const radius = CELL_SIZE * (0.2 + 0.8 * t);
+
+  ctx.save();
+  ctx.globalAlpha = 1 - t;
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = accentColor;
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+  ctx.stroke();
+
+  const glow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+  glow.addColorStop(0, "rgba(255, 255, 255, 0.45)");
+  glow.addColorStop(0.4, foodColor);
+  glow.addColorStop(1, "rgba(255, 255, 255, 0)");
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function render(now = performance.now()) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawGrid();
 
   const snakeColor = getComputedStyle(document.documentElement).getPropertyValue("--snake");
   const foodColor = getComputedStyle(document.documentElement).getPropertyValue("--food");
+  const accentColor = getComputedStyle(document.documentElement).getPropertyValue("--accent");
 
   state.snake.forEach((cell, idx) => {
     drawCell(cell, idx === 0 ? snakeColor : "#3b3b3b");
@@ -64,6 +99,8 @@ function render() {
   if (state.food) {
     drawCell(state.food, foodColor);
   }
+
+  drawEatEffect(now, foodColor, accentColor);
 
   scoreEl.textContent = String(state.score);
   overlay.classList.toggle("hidden", !state.gameOver && !paused);
@@ -79,7 +116,7 @@ function render() {
 function tick(now) {
   requestAnimationFrame(tick);
   if (paused || state.gameOver) {
-    render();
+    render(now);
     return;
   }
 
@@ -88,9 +125,14 @@ function tick(now) {
   }
 
   lastTick = now;
+  const prevFood = state.food;
+  const prevScore = state.score;
   state = advance(state, pendingDir);
+  if (state.score > prevScore && prevFood) {
+    eatEffect = { cell: prevFood, startedAt: now };
+  }
   pendingDir = null;
-  render();
+  render(now);
 }
 
 function setPendingDir(dir) {
@@ -103,6 +145,7 @@ function restart() {
   pendingDir = null;
   paused = false;
   lastTick = performance.now();
+  eatEffect = null;
   render();
 }
 
