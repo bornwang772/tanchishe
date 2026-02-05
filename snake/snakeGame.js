@@ -12,13 +12,14 @@ const touchControls = document.querySelector(".touch-controls");
 const ctx = canvas.getContext("2d");
 const CELL_SIZE = 20;
 const TICK_MS = 120;
-const EAT_EFFECT_MS = 240;
+const PARTICLE_TTL = 0.45;
 
 let state = createGameState({ rows: 20, cols: 20, rngSeed: 42 });
 let pendingDir = null;
 let lastTick = performance.now();
 let paused = false;
-let eatEffect = null;
+let particles = [];
+let lastRenderTime = performance.now();
 
 function resizeCanvas() {
   canvas.width = state.cols * CELL_SIZE;
@@ -52,45 +53,63 @@ function drawCell(cell, color) {
   );
 }
 
-function drawEatEffect(now, foodColor, accentColor) {
-  if (!eatEffect) return;
-  const elapsed = now - eatEffect.startedAt;
-  if (elapsed > EAT_EFFECT_MS) {
-    eatEffect = null;
-    return;
+function spawnEatParticles(cell) {
+  const centerX = cell.c * CELL_SIZE + CELL_SIZE / 2;
+  const centerY = cell.r * CELL_SIZE + CELL_SIZE / 2;
+  const count = 14;
+  for (let i = 0; i < count; i += 1) {
+    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.6;
+    const speed = 60 + Math.random() * 80;
+    particles.push({
+      x: centerX,
+      y: centerY,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 0,
+      ttl: PARTICLE_TTL + Math.random() * 0.1,
+      size: 2 + Math.random() * 2,
+    });
   }
+}
 
-  const t = elapsed / EAT_EFFECT_MS;
-  const centerX = eatEffect.cell.c * CELL_SIZE + CELL_SIZE / 2;
-  const centerY = eatEffect.cell.r * CELL_SIZE + CELL_SIZE / 2;
-  const radius = CELL_SIZE * (0.2 + 0.8 * t);
+function updateParticles(dt) {
+  particles = particles.filter((particle) => {
+    particle.life += dt;
+    particle.x += particle.vx * dt;
+    particle.y += particle.vy * dt;
+    particle.vx *= 0.98;
+    particle.vy *= 0.98;
+    return particle.life < particle.ttl;
+  });
+}
 
-  ctx.save();
-  ctx.globalAlpha = 1 - t;
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = accentColor;
-  ctx.beginPath();
-  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-  ctx.stroke();
-
-  const glow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
-  glow.addColorStop(0, "rgba(255, 255, 255, 0.45)");
-  glow.addColorStop(0.4, foodColor);
-  glow.addColorStop(1, "rgba(255, 255, 255, 0)");
-  ctx.fillStyle = glow;
-  ctx.beginPath();
-  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
+function drawParticles(foodColor, accentColor) {
+  particles.forEach((particle, idx) => {
+    const t = particle.life / particle.ttl;
+    const alpha = 1 - t;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = idx % 2 === 0 ? foodColor : accentColor;
+    ctx.beginPath();
+    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
 }
 
 function render(now = performance.now()) {
+  const dt = Math.min(0.05, (now - lastRenderTime) / 1000);
+  lastRenderTime = now;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawGrid();
 
   const snakeColor = getComputedStyle(document.documentElement).getPropertyValue("--snake");
   const foodColor = getComputedStyle(document.documentElement).getPropertyValue("--food");
   const accentColor = getComputedStyle(document.documentElement).getPropertyValue("--accent");
+
+  if (!paused && !state.gameOver) {
+    updateParticles(dt);
+  }
 
   state.snake.forEach((cell, idx) => {
     drawCell(cell, idx === 0 ? snakeColor : "#3b3b3b");
@@ -100,7 +119,7 @@ function render(now = performance.now()) {
     drawCell(state.food, foodColor);
   }
 
-  drawEatEffect(now, foodColor, accentColor);
+  drawParticles(foodColor, accentColor);
 
   scoreEl.textContent = String(state.score);
   overlay.classList.toggle("hidden", !state.gameOver && !paused);
@@ -129,7 +148,7 @@ function tick(now) {
   const prevScore = state.score;
   state = advance(state, pendingDir);
   if (state.score > prevScore && prevFood) {
-    eatEffect = { cell: prevFood, startedAt: now };
+    spawnEatParticles(prevFood);
   }
   pendingDir = null;
   render(now);
@@ -145,7 +164,8 @@ function restart() {
   pendingDir = null;
   paused = false;
   lastTick = performance.now();
-  eatEffect = null;
+  particles = [];
+  lastRenderTime = performance.now();
   render();
 }
 
