@@ -106,23 +106,34 @@ function drawCandyBlock(cell, baseColor, intensity = 0.8) {
   const rgb = parseColor(baseColor);
   const highlight = mixColor(rgb, { r: 255, g: 255, b: 255 }, 0.55);
   const mid = mixColor(rgb, { r: 255, g: 255, b: 255 }, 0.18);
-  const shadow = mixColor(rgb, { r: 0, g: 0, b: 0 }, 0.25);
+  const shadow = mixColor(rgb, { r: 0, g: 0, b: 0 }, 0.2);
 
   const x = cell.c * CELL_SIZE + 1;
   const y = cell.r * CELL_SIZE + 1;
   const size = CELL_SIZE - 2;
+  const centerX = x + size / 2;
+  const centerY = y + size / 2;
 
   ctx.save();
   ctx.shadowColor = "rgba(0, 0, 0, 0.25)";
-  ctx.shadowBlur = 6 * intensity;
-  ctx.shadowOffsetY = 2 * intensity;
+  ctx.shadowBlur = 7 * intensity;
+  ctx.shadowOffsetY = 3 * intensity;
 
   const gradient = ctx.createLinearGradient(x, y, x + size, y + size);
   gradient.addColorStop(0, rgbString(highlight));
   gradient.addColorStop(0.45, rgbString(mid));
   gradient.addColorStop(1, rgbString(shadow));
   ctx.fillStyle = gradient;
-  drawRoundedRect(x, y, size, 5);
+  drawRoundedRect(x, y, size, 7);
+  ctx.fill();
+
+  const jellyGlow = ctx.createRadialGradient(centerX, centerY, size * 0.1, centerX, centerY, size * 0.7);
+  jellyGlow.addColorStop(0, "rgba(255, 255, 255, 0.55)");
+  jellyGlow.addColorStop(0.5, `rgba(${highlight.r}, ${highlight.g}, ${highlight.b}, 0.25)`);
+  jellyGlow.addColorStop(1, "rgba(255, 255, 255, 0)");
+  ctx.globalAlpha = 0.7;
+  ctx.fillStyle = jellyGlow;
+  drawRoundedRect(x + 1, y + 1, size - 2, 6);
   ctx.fill();
 
   ctx.shadowColor = "transparent";
@@ -130,10 +141,12 @@ function drawCandyBlock(cell, baseColor, intensity = 0.8) {
   ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
   ctx.stroke();
 
-  ctx.globalAlpha = 0.6;
-  ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+  ctx.globalAlpha = 0.65;
+  ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+  ctx.shadowColor = "rgba(255, 255, 255, 0.6)";
+  ctx.shadowBlur = 6;
   ctx.beginPath();
-  ctx.ellipse(x + size * 0.35, y + size * 0.3, size * 0.18, size * 0.12, -0.5, 0, Math.PI * 2);
+  ctx.ellipse(x + size * 0.33, y + size * 0.28, size * 0.22, size * 0.15, -0.5, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 }
@@ -160,8 +173,14 @@ function drawCandyFood(cell, baseColor) {
   ctx.arc(x, y, radius, 0, Math.PI * 2);
   ctx.fill();
 
+  ctx.globalAlpha = 0.5;
+  ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+  ctx.beginPath();
+  ctx.arc(x, y + radius * 0.15, radius * 0.65, 0, Math.PI * 2);
+  ctx.fill();
+
   ctx.shadowColor = "transparent";
-  ctx.globalAlpha = 0.75;
+  ctx.globalAlpha = 0.85;
   ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
   ctx.beginPath();
   ctx.ellipse(x - radius * 0.2, y - radius * 0.3, radius * 0.35, radius * 0.22, -0.5, 0, Math.PI * 2);
